@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "##### Import training data set #####\ntraining_data_url <- \"http://s3.amazonaws.com/assets.datacamp.com/course/Kaggle/train.csv\"\ntrain <- read.csv(url(training_data_url))\n\ntest_data_url <- \"http://s3.amazonaws.com/assets.datacamp.com/course/Kaggle/test.csv\"\ntest <- read.csv(url(test_data_url))\n\n\n##### Re-engineering dataset #####\nreEngineeringDS <- function(dataSet){\n  dataSet$family_size <- dataSet$SibSp + dataSet$Parch + 1\n  dataSet$Name <- as.character(dataSet$Name)\n  dataSet$Title <- sapply(dataSet$Name, FUN=function(x){trimws(strsplit(x, \"[.,]\")[[1]][2])})\n  #dataSet$Title <- factor(dataSet$Title)\n  \n  return(dataSet)\n}\n\n\n\n##### Fill missing data #####\nlibrary(rpart)\nfillMissingData <- function(dataSet){\n  dataSet$Embarked[dataSet$Embarked == \"\"] <- \"S\"\n  dataSet$Embarked <- factor(dataSet$Embarked)\n  dataSet$Fare[dataSet$Fare==0] <- median(dataSet$Fare[dataSet$Fare!=0])\n  \n  # Prediction of a passengers Age using the other variables and a decision tree model. \n  predicted_age <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + family_size,\n                         data = dataSet[!is.na(dataSet$Age),], method = \"anova\")\n  dataSet$Age[is.na(dataSet$Age)] <- predict(predicted_age, dataSet[is.na(dataSet$Age),])\n\n  return(dataSet)\n}\n\n\n##### split training data into train batch and test batch #####\nlibrary(\"caret\")\nset.seed(123)\ntraining_rows <- createDataPartition(train$Survived, p = 0.8, list = FALSE)\ntrain_batch <- train[training_rows, ]\ntest_batch <- train[-training_rows, ]\n\n\n##### Build the decision tree #####\ndecision_tree_1 <- rpart(Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + family_size + Title,\n                         data = train_batch,\n                         method = \"class\",\n                         control = rpart.control(minsplit = 2, cp = 0))\n\ntest_batch$prediction1 <- predict(decision_tree_1, test_batch, type = \"class\")\naccuracy1 <- sum(test_batch$Survived == test_batch$prediction1, na.rm=TRUE)/nrow(test_batch)\n\n\n##### Plot fancy tree #####\nlibrary(rattle)\nlibrary(rpart.plot)\nlibrary(RColorBrewer)\n\nfancyRpartPlot(decision_tree_1)\n\n\n##### Using Random Forest Analysis #####\nlibrary(randomForest)\nmy_forest <- randomForest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title, \n                          train_batch, \n                          importance=TRUE, \n                          ntree=1000)\n# Make your prediction using the test set\ntest_batch$prediction2 <- predict(my_forest, test_batch)\naccuracy2 <- sum(test_batch$Survived == test_batch$prediction2, na.rm=TRUE)/nrow(test_batch)\n\n\n##### Important variables #####\nvarImpPlot(my_forest)\n\n\n##### Save solution #####\ngenerateSolution <- function(passengerIds, prediction){\n  # Finish the data.frame() call\n  solution <- data.frame(PassengerId = passengerIds, Survived = prediction)\n  \n  # Use nrow() on solution\n  nrow(solution)\n  \n  # Finish the write.csv() call\n  write.csv(solution, file = \"solution.csv\", row.names = FALSE)\n}\n\n\n##### Final solution #####\ntest <- reEngineeringDS(test)\ntest <- fillMissingData(test)\ntest_prediction <- predict(my_forest, test)\ngenerateSolution(test$PassengerId, test_prediction)\n\ndirname(parent.frame(2)$ofile)\n",
+    "created" : 1467901378111.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1154943361",
+    "id" : "6DD412B5",
+    "lastKnownWriteTime" : 1468050261,
+    "last_content_update" : 1468050261187,
+    "path" : "~/Documents/github/ML-problems/kaggle-titanic/Untitled.R",
+    "project_path" : "Untitled.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

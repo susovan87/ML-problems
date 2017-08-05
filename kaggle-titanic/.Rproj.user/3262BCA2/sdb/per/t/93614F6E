@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "##### Preparing Your R Workspace #####\n\n# Clean workspace\nrm(list=ls())\n\n# Set current working directory\nsetwd('/Users/susovan/Documents/github/ML-problems/kaggle-titanic')\n\n# Load training data\ntraining.data.file <- \"../data/train.csv\"\nbase.train <- read.csv(training.data.file)\n\n# Load test data\ntest.data.file <- \"../data/test.csv\"\nbase.test <- read.csv(test.data.file)\n\n",
+    "created" : 1468050350185.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "828164732",
+    "id" : "93614F6E",
+    "lastKnownWriteTime" : 1468378568,
+    "last_content_update" : 1468378568783,
+    "path" : "~/Documents/github/ML-problems/kaggle-titanic/main.R",
+    "project_path" : "main.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

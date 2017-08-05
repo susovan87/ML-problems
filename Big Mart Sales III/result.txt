@@ -1,0 +1,34 @@
+Linear Regression
+=================
+RMSE : 1127
+CV Score : Mean - 1129 | Std - 43.29 | Min - 1074 | Max - 1210
+
+
+Ridge Regression
+================
+RMSE : 1129
+CV Score : Mean - 1130 | Std - 44.6 | Min - 1076 | Max - 
+
+
+Decision Tree
+=============
+RMSE : 1058
+CV Score : Mean - 1091 | Std - 45.42 | Min - 1003 | Max - 1186
+
+RMSE : 1071
+CV Score : Mean - 1096 | Std - 43.3 | Min - 1027 | Max - 1172
+
+
+Random Forest
+=============
+RMSE : 1073
+CV Score : Mean - 1084 | Std - 43.58 | Min - 1022 | Max - 1161
+
+RMSE : 1068
+CV Score : Mean - 1083 | Std - 43.81 | Min - 1020 | Max - 1162
+
+RMSE : 1068
+CV Score : Mean - 1083 | Std - 43.55 | Min - 1020 | Max - 1161
+
+RMSE : 1052
+CV Score : Mean - 1081 | Std - 45.3 | Min - 1009 | Max - 1164

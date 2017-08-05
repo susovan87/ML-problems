@@ -1,0 +1,74 @@
+---
+title: "Kaggle Titanic"
+author: "Susovan Ghosh"
+date: "6 July 2016"
+output: html_document
+---
+
+## Load data
+
+```{r}
+# Set working directory
+setwd('~/Documents/github/ML-problems/kaggle-titanic')
+
+# Load data into df.train
+missing.types <- c("NA", "")
+df.train <- read.csv('./data/train.csv', na.strings = missing.types)
+df.test <- read.csv('./data/test.csv')
+
+df.train$LPclass <- factor(df.train$Pclass, levels=c(1,2,3), labels=c("first","second","third"))
+df.train$LSurvived <- factor(df.train$Survived, levels=c(0,1), labels=c("dead", "alive"))
+```
+
+## Get overview of data
+
+```{r}
+str(df.train)
+summary(df.train)
+```
+
+## Data Munging
+
+```{r}
+require(Amelia)
+missmap(df.train, main="Titanic Training Data - Missings Map", col=c("yellow","black"), legend=FALSE)
+```
+
+## Using ggplot2
+
+
+```{r}
+library("ggplot2")
+
+
+ggplot(df.train, aes(LSurvived, fill=LSurvived)) +
+  geom_bar() +
+  facet_wrap(~ LPclass) +
+  ggtitle('Survived in each class') +
+  xlab('Survived') +
+  guides(fill=FALSE)
+
+# ggplot(df.train, aes(LSurvived, fill=Sex)) +
+#   geom_bar(position="dodge", color="black") +
+#   ggtitle('Survived in each class') +
+#   xlab('Survived')
+
+# ggplot(na.omit(df.train), aes(LPclass, Age)) +
+#   geom_boxplot()
+
+```
+
+
+## Split training data
+```{r}
+## split training data into train batch and test batch
+library("caret")
+set.seed(123)
+training.rows <- createDataPartition(df.train$Survived, 
+                                     p = 0.8, list = FALSE)
+train.batch <- df.train[training.rows, ]
+train.test <- df.train[-training.rows, ]
+```
+
+
+
